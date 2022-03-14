@@ -15,27 +15,12 @@ class LinkedList:
         while current != None:
             index += 1
             if index == 1:
-                result += ' ' + str(current.value['name'])
+                result += ' ' + str(current.value)
             else:
-                result += ' -> ' + str(current.value['name']) # gia tri
+                result += ' -> ' + str(current.value) # gia tri
             current = current.next
         result += ' ]'
         print(result)
-    
-    def Mapping(self):
-        # tra ve 1 mang cac du lieu cua linked list
-        index = 0
-        current = self.head
-        temp = ' '
-        result = []
-        while current != None:
-            index += 1
-            if index == 1:
-                temp += ' ' + str(current.value)
-            else:
-                result.append(current.value)
-            current = current.next
-        return result
 
     def Push(self, value):
         node = Node(value)
@@ -85,7 +70,9 @@ class LinkedList:
         if current == None:
             return None
         else:
-            return index
+            if current.value['password'] == password:
+                return index, current.value
+            else: return None, { }
 
     def Find(self, value):
         current = self.head
@@ -129,6 +116,15 @@ class LinkedList:
             current = current.next
         if current != None:
             current.value = value
+    
+    def SetPassword(self, index, newpassword):
+        current = self.head
+        i = 0
+        while i < index and current != None:
+            i += 1
+            current = current.next
+        if current != None:
+            current.value['password'] = newpassword
 
     def Clear(self):
         current = self.head
