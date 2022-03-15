@@ -2,7 +2,9 @@
 # Then, he/she can view his/her profile info, change password, or log out of the system
 
 import random
+import os
 from os import system
+from this import s
 from llist import *
 import time
 
@@ -46,14 +48,80 @@ def Logout():
     print('Log out...')
     Login()
 
+def CreateSchoolYear():
+    schoolYear = input("Enter School year: ")
+    # create a new school year file
+    createdDirectory = schoolYear
+
+    dirName = 'tempDir'
+
+    try:
+        os.mkdir(createdDirectory)
+        print("Directory " , createdDirectory , " Created ") 
+    except FileExistsError:
+        print("Directory " , createdDirectory ,  " already exists")
+
+    i = input("Press [1] to create class")
+    if (i == '1'): CreateClass(schoolYear)
+
+def CreateClass(schoolYear):
+    className = input("Enter class name: ")
+    # create class file in school year directory
+    createdFile = schoolYear+"/"+className+".txt"
+    file = open(createdFile, "w")
+    file.close()
+    action = input("Press [y] to continue create, or exit")
+    if action == "y": CreateClass(schoolYear)
+    
+def AddNewStudent():
+    schoolYear = input("Enter school year: ") # năm học nào
+    className = input("Enter class name: ") # lớp nào
+    dirname = schoolYear+"/"+className+".txt"
+    file = open(dirname, "a")
+    username = input("Enter username: ")
+    uid, user = Users.FindByUserName(username)
+    temp = "name:{};id:{};age:{}".format(user['name'], uid, user['age'])
+    file.write(temp)
+
+    file.close()
+
+
+def AddNewStudentByFile():
+    inputFile = "students.txt"
+    schoolYear = input("Enter school year: ") # năm học nào
+    className = input("Enter class name: ") # lớp nào
+    dirname = schoolYear+"/"+className+".txt"
+
+    readFile = open(inputFile, "r")
+    for line in readFile:
+        uid, user = Users.FindByUserName(line)
+        print("Found :",line, uid)
+        if uid == None: continue
+        temp = "name:{};id:{};age:{}".format(user['name'], uid, user['age'])
+        writeFile = open(dirname, "a")
+        writeFile.write(temp)
+        writeFile.close()
+
+    readFile.close()
+ 
 def Manager(user, uid):
     print("1. Press [1] to view profile info")
     print("2. Press [2] to change password")
     print("3. Press [3] to log out")
+
+    if user['role'] == "teacher":
+        print("4. Press [4] to create a school year")
+        print("5. Press [5] to add students to class")
+        print("6. Press [6] to add students by file")
+
     action = input("Enter action: ")
     if action == '1': ViewProfile(user)
     if action == '2': ChangePassword(user, uid)
     if action == '3': Logout()
+    if user['role'] == "teacher":
+        if action == '4': CreateSchoolYear()
+        if action == '5': AddNewStudent()
+        if action == "6": AddNewStudentByFile()
 
 def Login():
     username = input("Enter username: ")
@@ -65,7 +133,6 @@ def Login():
     i, userdata = Users.FindUser(username, password)
     if userdata: 
         print("Dang nhap thanh cong")
-        print(userdata)
         Manager(userdata, i)
         # Chay ham Manager
     else: 

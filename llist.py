@@ -74,6 +74,18 @@ class LinkedList:
                 return index, current.value
             else: return None, { }
 
+    def FindByUserName(self, username):
+        current = self.head
+        index = 0
+
+        while current != None and current.value['name'] != username:
+            current = current.next
+            index += 1
+        if current == None:
+            return None, {}
+        else:
+            return index, current.value
+
     def Find(self, value):
         current = self.head
         index = 0
