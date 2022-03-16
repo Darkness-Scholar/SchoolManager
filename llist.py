@@ -63,9 +63,9 @@ class LinkedList:
         current = self.head
         index = 0
 
-        while current != None and current.value['name'] != username:
+        while current != None and current.value['username'] != username:
             current = current.next
-            print("NEXT >>>")
+            # print("NEXT >>>")
             index += 1
         if current == None:
             return None
@@ -78,7 +78,7 @@ class LinkedList:
         current = self.head
         index = 0
 
-        while current != None and current.value['name'] != username:
+        while current != None and current.value['username'] != username:
             current = current.next
             index += 1
         if current == None:
@@ -137,6 +137,7 @@ class LinkedList:
             current = current.next
         if current != None:
             current.value['password'] = newpassword
+        
 
     def Clear(self):
         current = self.head

@@ -1,34 +1,31 @@
-# There are 2 types of users in the system
-# Then, he/she can view his/her profile info, change password, or log out of the system
 
-import random
 import os
 from os import system
-from this import s
+from features import *
 from llist import *
 import time
 
-class User:
-    def __init__(self, account, password, info):
-        self.account = account
-        self.password = password
-        self.info = info
-        self.id = "{0}{1}".format(random.randrange(1000000, 1999999), random.choice(['a', 'b', 'c']))
-
-# Su dung linked list de luu cac user thay vi 1 mang
-
 Users = LinkedList()
 
-tung = { "name": "tung", "password":"123123", "age": 23, "role": "teacher" }
-tien = { "name": "tien", "password":"123123", "age": 18, "role": "student" }
-duck = { "name": "duck", "password":"123123", "age": 19, "role": "student" }
+def LoadData():
+    readFile = open("users.txt", "r")
+    for line in readFile:
+        udata = line.replace("\n", "").split(";")
+        temp = {
+            "username": udata[0], 
+            "fullname": udata[1], 
+            "password": udata[2], 
+            "birthday": udata[3],
+            "id": udata[4],
+            "role": udata[5]
+        }
+        Users.Push(temp)
+    readFile.close()
 
-Users.Push(tung)
-Users.Push(tien)
-Users.Push(duck)
+LoadData()
 
 def ViewProfile(user):
-    i, userdata = Users.FindUser(user['name'], user['password'])
+    i, userdata = Users.FindUser(user['username'], user['password'])
     print(userdata)
     print("Return to main menu after 3 seconds...")
     time.sleep(3)
@@ -39,6 +36,7 @@ def ChangePassword(user, uid):
     newPassword = input('Enter new password: ')
     Users.SetPassword(uid, newPassword)
     print('Password changed, new result: ')
+    # rewrite to data base file and reload, đây coi như bài tập cho các bạn
     ViewProfile(user)
 
 def Logout():
@@ -80,7 +78,7 @@ def AddNewStudent():
     file = open(dirname, "a")
     username = input("Enter username: ")
     uid, user = Users.FindByUserName(username)
-    temp = "name:{};id:{};age:{}".format(user['name'], uid, user['age'])
+    temp = "name:{};id:{};age:{}".format(user['username'], uid, user['age'])
     file.write(temp)
 
     file.close()
@@ -93,11 +91,12 @@ def AddNewStudentByFile():
     dirname = schoolYear+"/"+className+".txt"
 
     readFile = open(inputFile, "r")
+    
     for line in readFile:
-        uid, user = Users.FindByUserName(line)
+        uid, user = Users.FindByUserName(line.replace('\n', ''))
         print("Found :",line, uid)
         if uid == None: continue
-        temp = "name:{};id:{};age:{}".format(user['name'], uid, user['age'])
+        temp = "name:{};id:{};age:{}\n".format(user['username'], uid, user['age'])
         writeFile = open(dirname, "a")
         writeFile.write(temp)
         writeFile.close()
@@ -124,8 +123,8 @@ def Manager(user, uid):
         if action == "6": AddNewStudentByFile()
 
 def Login():
-    username = input("Enter username: ")
-    password = input("Enter password: ")
+    username = "tungxm123" #input("Enter username: ")
+    password = "123123" #input("Enter password: ")
 
     # Kiem tra xem username, password co ton tai trong database khong
     # FindUser return ve 2 gia tri
@@ -142,6 +141,8 @@ def Login():
         Login()
 
 def main():
-    Login()
+    action = input("[1:LOGIN]  [2:REGISTER]\t")
+    if action == "1": Login()
+    if action == "2": Register()
 
 if __name__ == '__main__': main()
